@@ -68,7 +68,7 @@ echo ""
 mkdir -p "$OUTPUT_FOLDER"
 
 # Counter for progress
-total_files=$(find "$INPUT_FOLDER" -maxdepth 1 \( -iname "*.wmv" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mpg" \) | wc -l | tr -d ' ')
+total_files=$(find "$INPUT_FOLDER" -maxdepth 1 \( -iname "*.wmv" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mpg" -o -iname "*.mpeg" \) | wc -l | tr -d ' ')
 current=0
 
 echo "Found $total_files video files to convert"
@@ -79,7 +79,7 @@ echo "Press Ctrl+C at any time to cancel"
 echo "----------------------------------------"
 
 # Loop through all video files in the input folder
-for input_file in "$INPUT_FOLDER"/*.{wmv,avi,mkv,mov,mpg,WMV,AVI,MKV,MOV,MPG}; do
+for input_file in "$INPUT_FOLDER"/*.{wmv,avi,mkv,mov,mpg,mpeg,WMV,AVI,MKV,MOV,MPG,MPEG}; do
     # Skip if no files match the pattern
     [ -e "$input_file" ] || continue
     
