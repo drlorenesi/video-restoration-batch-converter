@@ -102,15 +102,38 @@ for input_file in "$INPUT_FOLDER"/*.{wmv,avi,mkv,mov,mpg,mpeg,WMV,AVI,MKV,MOV,MP
     echo "Output: $(basename "$output_file")"
     
     # Run FFmpeg conversion with dynamic scale filter
-    ffmpeg -i "$input_file" \
+    # Note: For faster encoding on Mac (2-4x faster), use hardware acceleration by:
+    # 1. Commenting out the next two lines (libx264 and tune film)
+    # 2. Uncommenting the h264_videotoolbox line below
+    
+    ffmpeg -fflags +genpts+igndts -i "$input_file" \
+        -err_detect ignore_err \
+        -max_error_rate 1.0 \
         -vf "${SCALE_FILTER}hqdn3d=2:1:3:2,unsharp=luma_msize_x=7:luma_msize_y=7:luma_amount=1,format=yuv420p" \
         -c:v libx264 -preset slow -crf 22 \
         -tune film \
         -c:a aac -b:a 128k \
         -async 1 \
+        -af aresample=async=1:first_pts=0 \
+        -max_muxing_queue_size 9999 \
         -movflags +faststart \
         "$output_file" \
         -hide_banner -loglevel error -stats
+    
+    # Hardware acceleration version (comment out the ffmpeg command above and uncomment below):
+    # ffmpeg -fflags +genpts+igndts -i "$input_file" \
+    #     -err_detect ignore_err \
+    #     -max_error_rate 1.0 \
+    #     -vf "${SCALE_FILTER}hqdn3d=2:1:3:2,unsharp=luma_msize_x=7:luma_msize_y=7:luma_amount=1,format=yuv420p" \
+    #     -c:v h264_videotoolbox -b:v 6M \
+    #     -color_range pc \
+    #     -c:a aac -b:a 128k \
+    #     -async 1 \
+    #     -af aresample=async=1:first_pts=0 \
+    #     -max_muxing_queue_size 9999 \
+    #     -movflags +faststart \
+    #     "$output_file" \
+    #     -hide_banner -loglevel error -stats
     
     # Check if conversion was successful
     if [ $? -eq 0 ]; then
