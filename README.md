@@ -137,7 +137,8 @@ Specify custom input and output folders:
 - `.avi` (Audio Video Interleave)
 - `.mkv` (Matroska)
 - `.mov` (QuickTime)
-- `.mpg` (MPEG)
+- `.mpg` (MPG)
+- `.mpeg` (MPEG)
 
 All files are converted to `.mp4` format.
 
